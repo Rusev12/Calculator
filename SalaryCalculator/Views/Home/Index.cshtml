@@ -1,0 +1,144 @@
+﻿@model IEnumerable<SalaryCalculator.Models.DailyPayment>
+
+@{
+    ViewBag.Title = "Hours Worked";
+}
+
+
+
+@*jQuery UI CSS Reference*@
+<link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" /> 
+@*Required moment js*@
+<script src="~/Scripts/moment-with-locales.min.js"></script>
+
+@*Wire up DatePickers*@
+<script type="text/javascript">
+    $(function () {
+        $('.date-picker').datepicker();
+    })
+
+    $(function () {
+        $('[data-toggle = "tooltip"]').tooltip()
+    })
+
+
+
+</script>
+
+<div class="form-group">
+    <br />
+    <h2>Please select the range of dates to view</h2>
+    @Html.Label("Starting Date:")
+    @Html.TextBox("Starting Date:", "", new { @class = "date-picker form-control", id = "startDate", placeholder = "January 01, 1970" })
+    <br />
+    @Html.Label("Ending Date:")
+    @Html.TextBox("Ending Date:", "", new { @class = "date-picker form-control", id = "endDate", placeholder = "#" })
+    <br />
+
+    <a href="#" id="calendarSubmitButton" class="btn btn-primary">Get Dates</a>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#endDate").attr('placeholder', moment().format('MMMM DD, YYYY'));
+
+            $('#calendarSubmitButton').click(function () {
+                var tempStartDate = $("#startDate").val($.datepicker.formatDate('yymmdd', new Date($('#startDate').datepicker('getDate'))));
+                var tempEndDate = $("#endDate").val($.datepicker.formatDate('yymmdd', new Date($('#startDate').datepicker('getDate'))));
+
+
+                location.href = '@Url.Action("Index")?startDate=' + tempStartDate.val() + '&endDateFromJS=' + tempEndDate.val();
+
+            })
+        });
+
+    </script>
+
+</div>
+
+<h2>Hours Worked</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create", null, htmlAttributes: new { data_toggle = "tooltip", data_placement = "right", title = "Click here to create a new entry."})
+</p>
+
+
+
+@{decimal totalPayment = 0;}
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TimeStart)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TimeEnd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalMinutes)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalHours)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HourlyRate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DailyPayment1)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        string thisTimeStart = @Html.DisplayFor(modelItem => item.TimeStart).ToString();
+        string thisTimeEnd = @Html.DisplayFor(modelItem => item.TimeEnd).ToString();
+        Decimal thisHourlyRate = (decimal)item.HourlyRate;
+        string DisplayHourlyRate = thisHourlyRate.ToString("N0");
+        Decimal thisTotalDailyPayment = (decimal)item.DailyPayment1;
+        string DisplayTotalDailyPayment = thisTotalDailyPayment.ToString("N0");
+        totalPayment += (decimal)item.DailyPayment1;
+
+        <tr>
+            <td>
+                @item.Date.ToShortDateString()
+            </td>
+            <td>
+                @thisTimeStart.AsDateTime().ToString("HH:mm")                
+            </td>
+            <td>
+                @thisTimeEnd.AsDateTime().ToString("HH:mm")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalMinutes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalHours)
+            </td>
+            <td>
+                @Html.Encode(DisplayHourlyRate)
+            </td>
+            <td>
+                @Html.Encode(DisplayTotalDailyPayment)
+                                
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.DailyId }, htmlAttributes: new { data_toggle = "tooltip", data_placement = "right", title = "Click here to edit this entry." }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.DailyId }, htmlAttributes: new { data_toggle = "tooltip", data_placement = "right", title = "Click here to delete this entry." })
+            </td>
+        </tr>
+
+    }
+
+</table>
+
+<div class="form-group">
+    @Html.Label("Total payment:", new { id = "totalTextbox" }) <br />
+    @Html.TextBox("Total", totalPayment.ToString("n0") + " yen", new { @class = "alert alert-danger", @readonly = "readonly" })   
+</div>
+
+
+

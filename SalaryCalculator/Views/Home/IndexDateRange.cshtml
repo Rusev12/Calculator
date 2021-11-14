@@ -1,0 +1,208 @@
+﻿@model IEnumerable<SalaryCalculator.Models.DailyPayment>
+
+@{
+    ViewBag.Title = "Hours Worked";
+}
+
+
+
+@*jQuery UI CSS Reference*@
+<link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+@*Required jQuery and jQuery UI javascript ref*@
+<script src="~/Scripts/jquery-1.12.4.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.12.0.min.js"></script>
+
+@*Wire up DatePicker*@
+<script type="text/javascript">
+    $(function () {
+        $('.date-picker').datepicker();
+    })
+</script>
+
+<h2>Hours Worked</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create", null, htmlAttributes: new { data_toggle = "tooltip", data_placement = "right", title = "Click here to create a new entry." })
+</p>
+
+
+
+@{decimal totalPayment = 0;}
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TimeStart)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TimeEnd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalMinutes)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalHours)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HourlyRate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DailyPayment1)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+
+        totalPayment += (decimal)item.DailyPayment1;
+        <tr>
+            <td>
+                @item.Date.ToShortDateString()
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimeStart)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimeEnd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalMinutes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalHours)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HourlyRate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DailyPayment1)
+
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", null, new { id = item.DailyId, data_toggle = "tooltip", data_placement = "right", title = "Click here to edit this entry." }) |
+                @Html.ActionLink("Delete", "Delete", null, new { id = item.DailyId, data_toggle = "tooltip", data_placement = "right", title = "Click here to delete this entry." })
+            </td>
+        </tr>
+
+    }
+
+</table>
+
+<div class="form-group">
+    @Html.Label("Total payment:", new { id = "totalTextbox" }) <br />
+    @Html.TextBox("Total", Math.Floor(totalPayment) + " yen", new { @class = "alert alert-danger", @readonly = "readonly" })
+
+</div>
+
+<div class="form-group">
+    @Html.Label("Starting Date:")
+    @Html.TextBox("Starting Date:", "", new { @class = "date-picker", id = "startDate" })
+
+    @Html.Label("Ending Date:")
+    @Html.TextBox("Ending Date:", "", new { @class = "date-picker", id = "endDate" })
+
+    <p>@DateTime.Now.AddMonths(-1).ToString("d")</p>
+
+
+    @*<input type="submit" href="#" id="calendarSubmitButton" class="btn btn-primary"  />*@
+    <a href="#" id="calendarSubmitButton">Get Dates</a>
+
+    <script type="text/javascript">
+
+        $('#calendarSubmitButton').click(function () {
+            //TODO: Figure this out.
+            var tempStartDate = @DateTime.Now.AddMonths(-1).ToString("yyyyMMdd");
+            var tempEndDate = @DateTime.Now.ToString("yyyyMMdd");
+            var link ='@Url.Action("IndexDateRange", routeValues: new {  startDateFromJS = "-1", endDateFromJS = "-2" })';
+            link = link.replace("-1", tempStartDate);
+            link = link.replace("-2", tempEndDate);
+            location.href = link;
+
+
+            @*@location.href='@Url.Action("IndexDateRange")+'?startDateFrom‌​JS='+$('tempStartDate')+'&endDateFromJS='+$('tempEndDate')';*@
+
+        })
+
+        function getStartDate() {
+
+            $('#startDate').datepicker();
+            $('#calendarSubmitButton').click(function () {
+                var startDate = $('#startDate').datepicker('getDate');
+                console.log(startDate);
+                return startDate;
+            })
+
+        }
+
+        function getEndDate() {
+            $('#endDate').datepicker();
+            $('#calendarSubmitButton').click(function () {
+                var endDate = $('#endDate').datepicker('getDate');
+                console.log(endDate);
+                return endDate;
+
+            })
+
+        }
+
+
+        @*$('#calendarSubmitButton').click(function () {
+            //TODO: Figure this out.
+            location.href='@Url.Action("IndexDateRange")+'?startDateFrom‌​JS='+$('#startDate')‌​.datepicker('getDate‌​')+'&endDateFromJS'+‌$('#endDate').datepicker('getDate')';
+
+        });*@
+
+        /*
+
+        $(function () {
+
+
+
+
+
+
+            function getStartDate() {
+
+                $('#startDate').datepicker();
+                $('#calendarSubmitButton').click(function () {
+                    var startDate = $('#startDate').datepicker('getDate');
+                    console.log(startDate);
+                    return startDate;
+                })
+
+            };
+            function getEndDate() {
+                $('#endDate').datepicker();
+                $('#calendarSubmitButton').click(function () {
+                    var endDate = $('#endDate').datepicker('getDate');
+                    console.log(endDate);
+                    return endDate;
+
+                })
+
+            };
+
+
+
+            //TODO: Figure out why I'm getting undefined here for the dates.
+            $(function () {
+                var startDate = getStartDate();
+                var endDate = getEndDate();
+                $('#calendarSubmitButton').click(function () {
+                    $('#totalTextbox').replaceWith("Total payment dates between " + startDate + " and " + endDate + " is:");
+                })
+            });
+
+        }); */
+
+
+
+    </script>
+
+
+
+</div>
+

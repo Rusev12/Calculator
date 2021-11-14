@@ -1,0 +1,54 @@
+﻿@model NetSalaryCalculator
+
+<div class="container" style="padding-top:80px;">
+    <h1 style="color:darkgoldenrod; text-align:center"><b>Salary calculator 2021</b></h1>
+    <p style="color:darkgrey; text-align:center">Salary calculator</p>
+    <br />
+
+    <table class="table">
+        <thead style="color:aliceblue; font-size: 30px">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.GrossSalary)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NetSalary)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IncomeTax)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SocialContributions)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CharityTaxes)
+                </th>
+               
+                <th></th>
+            </tr>
+        </thead>
+        <tbody style="color:darkgoldenrod; font-size: 30px; font-weight: 900;">
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => model.GrossSalary)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.NetSalary)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.IncomeTax)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.SocialContributions)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.CharityTaxes)
+                </td>
+              
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+
+
